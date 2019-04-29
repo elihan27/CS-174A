@@ -98,8 +98,12 @@ class Transforms_Sandbox extends Transforms_Sandbox_Base
        this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
 
        model_transform = model_transform.times( Mat4.translation([ 1,1, 0 ]) );
-        model_transform = model_transform.times( Mat4.rotation( 0.5*Math.sin(2*Math.PI*t), Vec.of( 0,0,1 ) ) );
-        model_transform = model_transform.times( Mat4.translation([ 1,1, 0 ]) );
+       model_transform = model_transform.times( Mat4.rotation( 0.5*Math.sin(2*Math.PI*t), Vec.of( 0,0,1 ) ) )
+       .times( Mat4.translation([ 10,0.1, 0 ]) ).times( Mat4.scale  ([ 10,   0.1, 1 ]) );
+       
+        /*model_transform = model_transform.times( Mat4.rotation( 0.5*Math.sin(2*Math.PI*t), Vec.of( 0,0,1 ) ) );
+        model_transform = model_transform.times( Mat4.translation([ 10,0.1, 0 ]) );
+        model_transform = model_transform.times( Mat4.scale  ([ 10,   0.1, 1 ]) )*/
         this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( trans ) );
 
 
