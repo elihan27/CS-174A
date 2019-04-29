@@ -44,7 +44,7 @@ class Transforms_Sandbox extends Transforms_Sandbox_Base
                                                   // translation(), scale(), and rotation() to generate matrices, and the 
                                                   // function times(), which generates products of matrices.
 
-      const blue = Color.of( 0,0,1,1 ), yellow = Color.of( 1,1,0,1 ), orange = Color.of( 1,0.5,0,1 ); //yellow = Color.of( 1,1,0,1 )
+      const blue = Color.of( 0,0,1,1 ), yellow = Color.of( 1,1,0,1 ), orange = Color.of( 1,0.5,0,1 ), trans = Color.of( 0,0,1,.5 ); //yellow = Color.of( 1,1,0,1 )
 
                                     // Variable model_transform will be a local matrix value that helps us position shapes.
                                     // It starts over as the identity every single frame - coordinate axes at the origin.
@@ -92,23 +92,41 @@ class Transforms_Sandbox extends Transforms_Sandbox_Base
       model_transform   = model_transform.times( Mat4.translation([ 0,0, -2 ]) );
       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
 
-     /* model_transform   = model_transform.times( Mat4.translation([ 0,-1, -1 ]) );
-         model_transform = model_transform.times( Mat4.rotation( 0.1*Math.sin(2*Math.PI*t) + 0.03*Math.PI, Vec.of( -1,0,0 ) ) );
+      model_transform   = model_transform.times( Mat4.translation([ 0,-1, -1 ]) );
+       //model_transform = model_transform.times( Mat4.rotation( 0.1*Math.sin(2*Math.PI*t) + 0.03*Math.PI, Vec.of( -1,0,0 ) ) );
        model_transform   = model_transform.times( Mat4.translation([ 0,1, -1 ]) );
-       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );*/
+       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
+
+       model_transform = model_transform.times( Mat4.translation([ 1,1, 0 ]) );
+        model_transform = model_transform.times( Mat4.rotation( 0.5*Math.sin(2*Math.PI*t), Vec.of( 0,0,1 ) ) );
+        model_transform = model_transform.times( Mat4.translation([ 1,1, 0 ]) );
+        this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( trans ) );
 
 
-       
-      for ( let i=0; i<9; i++){
-
-       model_transform   = model_transform.times( Mat4.translation([ 0,-1, -1 ]) );
-       //if( !this.hover )
+     /*model_transform   = model_transform.times( Mat4.translation([ 0,-1, -1 ]) );
          model_transform = model_transform.times( Mat4.rotation( 0.1*Math.sin(2*Math.PI*t) + 0.03*Math.PI, Vec.of( -1,0,0 ) ) );
        model_transform   = model_transform.times( Mat4.translation([ 0,1, -1 ]) );
        this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
- 
+
+
+ if (i==1){
+           let wing_1 =  model_transform.copy();
+           wing_1 = wing_1.times(Mat4.translation([ 0,1, 0 ]))
+           this.shapes.box.draw( context, program_state, wing_1, this.materials.plastic.override( orange ) );
+       }*/
+
+       
+     /* for ( let i=0; i<9; i++){
+
+       model_transform   = model_transform.times( Mat4.translation([ 0,-1, -1 ]) );
+       model_transform = model_transform.times( Mat4.rotation( 0.1*Math.sin(2*Math.PI*t) + 0.03*Math.PI, Vec.of( -1,0,0 ) ) );
+       model_transform   = model_transform.times( Mat4.translation([ 0,1, -1 ]) );
+       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
+
+      
+
           
-      }
+      }*/
 
 
 
