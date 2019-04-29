@@ -87,7 +87,7 @@ class Transforms_Sandbox extends Transforms_Sandbox_Base
                                                       // Spin our current coordinate frame as a function of time.  Only do
                                                       // this movement if the button on the page has not been toggled off.
       if( !this.hover )
-        model_transform = model_transform.times( Mat4.rotation( t, Vec.of( 0,0,1 ) ) ) //rotation!  I guess!
+        model_transform = model_transform.times( Mat4.rotation( t, Vec.of( 1,0,0 ) ) )
 
                                                       // Perform three transforms in a row.
                                                       // Rotate the coordinate frame counter-clockwise by 1 radian,
@@ -97,10 +97,10 @@ class Transforms_Sandbox extends Transforms_Sandbox_Base
                                                       // one another (new box radius = 2, ball radius = 1, coordinate
                                                       // frame axis is currently doubled in size).
       model_transform   = model_transform//.times( Mat4.rotation( 1, Vec.of( 0,0,1 ) ) )
-                                         .times( Mat4.scale      ([ 1,   2, 1 ]) )
-                                         .times( Mat4.translation([ 0,-1.5, 0 ]) );
+                                         //.times( Mat4.scale      ([ 1,   2, 1 ]) )
+                                         .times( Mat4.translation([ 0,0, -2 ]) );
                                                                                     // Draw the bottom (child) box:
-      this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( yellow ) );
+      this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
 
                               // Note that our coordinate system stored in model_transform still has non-uniform scaling
                               // due to our scale() call.  This could have undesired effects for subsequent transforms;
