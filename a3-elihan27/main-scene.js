@@ -91,46 +91,52 @@ class Transforms_Sandbox extends Transforms_Sandbox_Base
 
       model_transform   = model_transform.times( Mat4.translation([ 0,0, -2 ]) );
       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
-
-      model_transform   = model_transform.times( Mat4.translation([ 0,-1, -1 ]) );
-       //model_transform = model_transform.times( Mat4.rotation( 0.1*Math.sin(2*Math.PI*t) + 0.03*Math.PI, Vec.of( -1,0,0 ) ) );
-       model_transform   = model_transform.times( Mat4.translation([ 0,1, -1 ]) );
+        model_transform   = model_transform.times( Mat4.translation([ 0,0, -2 ]) ); 
+        //if you want to stay still
+      
+       /*model_transform   = model_transform.times( Mat4.translation([ 0,-1, -1 ]) );
+       model_transform = model_transform.times( Mat4.rotation( 0.1*Math.sin(2*Math.PI*t) + 0.03*Math.PI, Vec.of( -1,0,0 ) ) );
+       model_transform   = model_transform.times( Mat4.translation([ 0,1, -1 ]) );*/
+        //if you want to test on something moving
+       
        this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
 
-       model_transform = model_transform.times( Mat4.translation([ 1,1, 0 ]) );
+      /*model_transform = model_transform.times( Mat4.translation([ -1,1, 0 ]) );
        model_transform = model_transform.times( Mat4.rotation( 0.5*Math.sin(2*Math.PI*t), Vec.of( 0,0,1 ) ) )
-       .times( Mat4.translation([ 10,0.1, 0 ]) ).times( Mat4.scale  ([ 10,   0.1, 1 ]) );
-       
-        /*model_transform = model_transform.times( Mat4.rotation( 0.5*Math.sin(2*Math.PI*t), Vec.of( 0,0,1 ) ) );
-        model_transform = model_transform.times( Mat4.translation([ 10,0.1, 0 ]) );
-        model_transform = model_transform.times( Mat4.scale  ([ 10,   0.1, 1 ]) )*/
-        this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( trans ) );
+       .times( Mat4.translation([ -10,0.1, 0 ]) )
+       .times( Mat4.scale  ([ 10,   0.1, 1 ]) );
+       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( trans ) );*/
+        
 
 
-     /*model_transform   = model_transform.times( Mat4.translation([ 0,-1, -1 ]) );
-         model_transform = model_transform.times( Mat4.rotation( 0.1*Math.sin(2*Math.PI*t) + 0.03*Math.PI, Vec.of( -1,0,0 ) ) );
-       model_transform   = model_transform.times( Mat4.translation([ 0,1, -1 ]) );
-       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
-
-
- if (i==1){
-           let wing_1 =  model_transform.copy();
-           wing_1 = wing_1.times(Mat4.translation([ 0,1, 0 ]))
-           this.shapes.box.draw( context, program_state, wing_1, this.materials.plastic.override( orange ) );
-       }*/
 
        
-     /* for ( let i=0; i<9; i++){
+    for ( let i=0; i<9; i++){
 
        model_transform   = model_transform.times( Mat4.translation([ 0,-1, -1 ]) );
        model_transform = model_transform.times( Mat4.rotation( 0.1*Math.sin(2*Math.PI*t) + 0.03*Math.PI, Vec.of( -1,0,0 ) ) );
        model_transform   = model_transform.times( Mat4.translation([ 0,1, -1 ]) );
        this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
 
+       if (i==0 || i==1){
+           let wing_1 =  model_transform.copy();
+           wing_1 = wing_1.times( Mat4.translation([ 1,1, 0 ]) );
+           wing_1 = wing_1.times( Mat4.rotation( 0.5*Math.sin(2*Math.PI*t), Vec.of( 0,0,1 ) ) )
+       .times( Mat4.translation([ 10,0.1, 0 ]) ).times( Mat4.scale  ([ 10,   0.1, 1 ]) );
+       this.shapes.box.draw( context, program_state, wing_1, this.materials.plastic.override( trans ) );
       
+        let wing_2 =  model_transform.copy();
+           wing_2 = wing_2.times( Mat4.translation([ -1,1, 0 ]) );
+           wing_2 = wing_2.times( Mat4.rotation( -0.5*Math.sin(2*Math.PI*t), Vec.of( 0,0,1 ) ) )
+       .times( Mat4.translation([ -10,0.1, 0 ]) ).times( Mat4.scale  ([ 10,   0.1, 1 ]) );
+       this.shapes.box.draw( context, program_state, wing_2, this.materials.plastic.override( trans ) );
+
 
           
-      }*/
+       }
+
+          
+      }
 
 
 
