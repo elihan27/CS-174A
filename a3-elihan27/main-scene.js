@@ -60,12 +60,40 @@ class Transforms_Sandbox extends Transforms_Sandbox_Base
 
                                                      // Position the root shape.  For this example, we'll use a box 
                                                      // shape, and place it at the coordinate origin 0,0,0:
-      model_transform = model_transform.times( Mat4.translation([ 0,0,0 ]) );
+       const t = this.t = program_state.animation_time/1000;
+
+                                                      // Spin our current coordinate frame as a function of time.  Only do
+                                                      // this movement if the button on the page has not been toggled off.
+     //model_transform=model_transform.times( Mat4.translation(  0,0,1 )  );
+      if (!this.hover){
+          //model_transform=model_transform.times( Mat4.translation(  0,0,1 )  );
+          model_transform=model_transform.times( Mat4.rotation( -t , Vec.of( 0,1,0 ) ) );
+        // model_transform=model_transform.times( Mat4.translation(  1,0,0 )  );
+          model_transform=model_transform.times( Mat4.translation( Vec.of(0, 5*Math.sin(5*t),0))  );
+          //model_transform=model_transform.times(Mat4.translation(-2,0,0));
+
+      }
+      
+      
+
                                                                                               // Draw the top box (head):
       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( yellow ) ); 
+
+      let eye_1=model_transform.copy();
+      let eye_2=model_transform.copy();
+
+
+      eye_1=eye_1.times( Mat4.translation([ -3, 0, 0 ])).times( Mat4.scale ([ 2,   2, 2 ]) );
+      this.shapes.ball.draw( context, program_state, eye_1, this.materials.metal.override( blue ) );
+
+     
+      eye_2=model_transform.times( Mat4.translation([ 3, 0, 0 ])).times( Mat4.scale ([ 2,   2, 2 ]) );
+       this.shapes.ball.draw( context, program_state, eye_2, this.materials.metal.override( blue ) );
+
+      
       
                                                      //scale by 2, move over by 3 units (1.5).
-      model_transform = model_transform.times( Mat4.scale      ([ 2,   2, 2 ]) ).times( Mat4.translation([ -1.5, 0, 0 ])); 
+     /* model_transform = model_transform.times( Mat4.scale      ([ 2,   2, 2 ]) ).times( Mat4.translation([ -1.5, 0, 0 ])); 
                                                                            // Draw left eye, a child of the hierarchy root.
       this.shapes.ball.draw( context, program_state, model_transform, this.materials.metal.override( blue ) );  //one eye
 
@@ -82,16 +110,16 @@ class Transforms_Sandbox extends Transforms_Sandbox_Base
                                                                       // within our hierarchy.
                                                                       // Find how much time has passed in seconds; we can use
                                                                       // time as an input when calculating new transforms:
-      const t = this.t = program_state.animation_time/1000;
-
-                                                      // Spin our current coordinate frame as a function of time.  Only do
-                                                      // this movement if the button on the page has not been toggled off.
+     */
     
 
 
       model_transform   = model_transform.times( Mat4.translation([ 0,0, -2 ]) );
       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( orange ) );
       
+     
+//-------------------------- PROTOTYPING START -------------------------- //
+
       //model_transform   = model_transform.times( Mat4.translation([ 0,0, -2 ]) ); 
         //if you want to stay still
       
@@ -152,9 +180,9 @@ class Transforms_Sandbox extends Transforms_Sandbox_Base
        //.times( Mat4.scale  ([ 0.3,   2,  0.3]) );
 
        
-       this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( blue ) );
+       //this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( blue ) );
 
-
+//-------------------------- PROTOTYPING END -------------------------- //
 
        
     for ( let i=0; i<9; i++){
