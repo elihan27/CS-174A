@@ -204,17 +204,6 @@ class Solar_System extends Scene
                             // new value based on our light switch.                         
       
       const modifier = this.lights_on ? { ambient: 0.3 } : { ambient: 0.0 };
-      /*this.materials.planet_1.override( modifier );
-      this.materials.planet_2.override( modifier );
-      this.materials.moon_2.override( modifier );
-      this.materials.metal_earth.override( modifier );
-      this.materials.planet_4.override( modifier );
-      this.materials.planet_5.override( modifier );*/
-
-
-
-
-
 
                                                 // TODO (#3d):   Draw the sun using its matrix (crated by you above) and material.
     
@@ -266,26 +255,26 @@ class Solar_System extends Scene
                                                 // TODO (#6b2):  Draw moon 2 orbiting 2 units away from planet 3, revolving AND rotating.
                                                 // *TODO: figure out the gouraud shader
       let moon_2 = planet_3.copy()
-      moon_2 = moon_2.times( Mat4.rotation( 1*t , Vec.of( 0,1,0 ) ) );
+      moon_2 = moon_2.times( Mat4.rotation( .5*t , Vec.of( 0,1,0 ) ) );
       moon_2 = moon_2.times( Mat4.translation([  2,0,0 ])  );
-      moon_2 = moon_2.times( Mat4.rotation( 1*t , Vec.of( 0,1,0 ) ) );
+      moon_2 = moon_2.times( Mat4.rotation( .5*t , Vec.of( 0,1,0 ) ) );
       this.shapes.ball_1.draw( context, program_state, moon_2,this.materials.moon_2.override( modifier ));
 
                                                 // TODO (#4d4):  Draw planet 4
       radius+=3
       let planet_4 = model_transform.copy()
-      planet_4 = planet_4.times( Mat4.rotation( .4*t , Vec.of( 0,1,0 ) ) );
+      planet_4 = planet_4.times( Mat4.rotation( .45*t , Vec.of( 0,1,0 ) ) );
       planet_4 = planet_4.times( Mat4.translation([ radius,0,0 ])  );
-      planet_4 = planet_4.times( Mat4.rotation( .4*t , Vec.of( 0,1,0 ) ) );
+      planet_4 = planet_4.times( Mat4.rotation( .45*t , Vec.of( 0,1,0 ) ) );
       this.shapes.ball_5.draw( context, program_state, planet_4,this.materials.planet_4.override( modifier ));
 
       
                                                 // TODO (#4d5):  Draw planet 5
       radius+=3
       let planet_5 = model_transform.copy()
-      planet_5 = planet_5.times( Mat4.rotation( .3*t , Vec.of( 0,1,0 ) ) );
+      planet_5 = planet_5.times( Mat4.rotation( .4*t , Vec.of( 0,1,0 ) ) );
       planet_5 = planet_5.times( Mat4.translation([ radius,0,0 ])  );
-      planet_5 = planet_5.times( Mat4.rotation( .3*t , Vec.of( 0,1,0 ) ) );
+      planet_5 = planet_5.times( Mat4.rotation( .4*t , Vec.of( 0,1,0 ) ) );
       this.shapes.ball_5.draw( context, program_state, planet_5,this.materials.planet_5.override( modifier ));
       
       
@@ -317,19 +306,25 @@ class Solar_System extends Scene
                                                   .times(Mat4.translation([  0,0,4 ])  )
                                                         ));
       this.camera_teleporter.cameras.push(Mat4.inverse (  
+                                          moon_1.times(Mat4.rotation(.5*t, Vec.of(0,-1,0)) )
+                                                  .times(Mat4.translation([  0,0,4 ])  )
+                                                        ));
+
+      this.camera_teleporter.cameras.push(Mat4.inverse (  
                                           planet_3.times(Mat4.rotation(.5*t, Vec.of(0,-1,0)) )
                                                   .times(Mat4.translation([  0,0,4 ])  )
                                                         ));
       this.camera_teleporter.cameras.push(Mat4.inverse (  
-                                          moon_2.times(Mat4.rotation(1*t, Vec.of(0,-1,0)) )
-                                                  .times(Mat4.translation([  0,0,2 ])  )
-                                                        ));
-      this.camera_teleporter.cameras.push(Mat4.inverse (  
-                                          planet_4.times(Mat4.rotation(.4*t, Vec.of(0,-1,0)) )
+                                          moon_2.times(Mat4.rotation(.5*t, Vec.of(0,-1,0)) )
+                                               // .times(Mat4.rotation(.5*t, Vec.of(0,-1,0)) )
                                                   .times(Mat4.translation([  0,0,4 ])  )
                                                         ));
       this.camera_teleporter.cameras.push(Mat4.inverse (  
-                                          planet_5.times(Mat4.rotation(.3*t, Vec.of(0,-1,0)) )
+                                          planet_4.times(Mat4.rotation(.45*t, Vec.of(0,-1,0)) )
+                                                  .times(Mat4.translation([  0,0,4 ])  )
+                                                        ));
+      this.camera_teleporter.cameras.push(Mat4.inverse (  
+                                          planet_5.times(Mat4.rotation(.4*t, Vec.of(0,-1,0)) )
                                                   .times(Mat4.translation([  0,0,4 ])  )
                                                         ));
 
