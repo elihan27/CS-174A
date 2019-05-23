@@ -182,6 +182,8 @@ class Solar_System extends Scene
                  //sun = undefined,
            sun_color  = Color.of( smoothly_varying_ratio,smoothly_varying_ratio,.5-smoothly_varying_ratio,1 );
 
+           let ambient=0;
+
 
         
 
@@ -202,12 +204,14 @@ class Solar_System extends Scene
                             // new value based on our light switch.                         
       
       const modifier = this.lights_on ? { ambient: 0.3 } : { ambient: 0.0 };
-      this.materials.planet_1.override( modifier )
-      this.materials.planet_2.override( modifier )
-      this.materials.moon_2.override( modifier )
-      this.materials.metal_earth.override( modifier )
-      this.materials.planet_4.override( modifier )
-      this.materials.planet_5.override( modifier )
+      /*this.materials.planet_1.override( modifier );
+      this.materials.planet_2.override( modifier );
+      this.materials.moon_2.override( modifier );
+      this.materials.metal_earth.override( modifier );
+      this.materials.planet_4.override( modifier );
+      this.materials.planet_5.override( modifier );*/
+
+
 
 
 
@@ -228,7 +232,7 @@ class Solar_System extends Scene
       planet_1 = planet_1.times( Mat4.rotation( t , Vec.of( 0,1,0 ) ) );
       planet_1 = planet_1.times( Mat4.translation([  radius,0,0 ])  );
       planet_1 = planet_1.times( Mat4.rotation( t , Vec.of( 0,1,0 ) ) );
-      this.shapes.ball_3.draw( context, program_state, planet_1, this.materials.planet_1);
+      this.shapes.ball_3.draw( context, program_state, planet_1, this.materials.planet_1.override( modifier ));
      
 
 
@@ -238,7 +242,7 @@ class Solar_System extends Scene
       planet_2 = planet_2.times( Mat4.rotation( .8*t , Vec.of( 0,1,0 ) ) );
       planet_2 = planet_2.times( Mat4.translation([  radius,0,0 ])  );
       planet_2 = planet_2.times( Mat4.rotation( .8*t , Vec.of( 0,1,0 ) ) );
-      this.shapes.ball_2.draw( context, program_state, planet_2, this.materials.planet_2);
+      this.shapes.ball_2.draw( context, program_state, planet_2, this.materials.planet_2.override( modifier ));
      
       
                                                 // TODO (#6b1):  Draw moon 1 orbiting 2 units away from planet 2, revolving AND rotating.
@@ -247,7 +251,7 @@ class Solar_System extends Scene
       moon_1 = moon_1.times( Mat4.rotation( .5*t , Vec.of( 0,1,0 ) ) );
       moon_1 = moon_1.times( Mat4.translation([  2,0,0 ])  );
       moon_1 = moon_1.times( Mat4.rotation( .5*t , Vec.of( 0,1,0 ) ) );
-      this.shapes.ball_2.draw( context, program_state, moon_1, this.materials.planet_2);
+      this.shapes.ball_2.draw( context, program_state, moon_1, this.materials.planet_2.override( modifier ));
 
       
                                                 // TODO (#4d3):  Draw planet 3 orbiting 3 units farther, revolving AND rotating slower.
@@ -256,16 +260,16 @@ class Solar_System extends Scene
       planet_3 = planet_3.times( Mat4.rotation( .5*t , Vec.of( 0,1,0 ) ) );
       planet_3 = planet_3.times( Mat4.translation([ radius,0,0 ])  );
       planet_3 = planet_3.times( Mat4.rotation( .5*t , Vec.of( 0,1,0 ) ) );
-      this.shapes.ball_4.draw( context, program_state, planet_3,this.materials.metal_earth);
+      this.shapes.ball_4.draw( context, program_state, planet_3,this.materials.metal_earth.override( modifier ));
 
       
                                                 // TODO (#6b2):  Draw moon 2 orbiting 2 units away from planet 3, revolving AND rotating.
                                                 // *TODO: figure out the gouraud shader
       let moon_2 = planet_3.copy()
-      moon_2 = moon_2.times( Mat4.rotation( .5*t , Vec.of( 0,1,0 ) ) );
+      moon_2 = moon_2.times( Mat4.rotation( 1*t , Vec.of( 0,1,0 ) ) );
       moon_2 = moon_2.times( Mat4.translation([  2,0,0 ])  );
-      moon_2 = moon_2.times( Mat4.rotation( .5*t , Vec.of( 0,1,0 ) ) );
-      this.shapes.ball_1.draw( context, program_state, moon_2,this.materials.moon_2);
+      moon_2 = moon_2.times( Mat4.rotation( 1*t , Vec.of( 0,1,0 ) ) );
+      this.shapes.ball_1.draw( context, program_state, moon_2,this.materials.moon_2.override( modifier ));
 
                                                 // TODO (#4d4):  Draw planet 4
       radius+=3
@@ -273,7 +277,7 @@ class Solar_System extends Scene
       planet_4 = planet_4.times( Mat4.rotation( .4*t , Vec.of( 0,1,0 ) ) );
       planet_4 = planet_4.times( Mat4.translation([ radius,0,0 ])  );
       planet_4 = planet_4.times( Mat4.rotation( .4*t , Vec.of( 0,1,0 ) ) );
-      this.shapes.ball_5.draw( context, program_state, planet_4,this.materials.planet_4);
+      this.shapes.ball_5.draw( context, program_state, planet_4,this.materials.planet_4.override( modifier ));
 
       
                                                 // TODO (#4d5):  Draw planet 5
@@ -282,7 +286,7 @@ class Solar_System extends Scene
       planet_5 = planet_5.times( Mat4.rotation( .3*t , Vec.of( 0,1,0 ) ) );
       planet_5 = planet_5.times( Mat4.translation([ radius,0,0 ])  );
       planet_5 = planet_5.times( Mat4.rotation( .3*t , Vec.of( 0,1,0 ) ) );
-      this.shapes.ball_5.draw( context, program_state, planet_5,this.materials.planet_5);
+      this.shapes.ball_5.draw( context, program_state, planet_5,this.materials.planet_5.override( modifier ));
       
       
 
@@ -315,6 +319,10 @@ class Solar_System extends Scene
       this.camera_teleporter.cameras.push(Mat4.inverse (  
                                           planet_3.times(Mat4.rotation(.5*t, Vec.of(0,-1,0)) )
                                                   .times(Mat4.translation([  0,0,4 ])  )
+                                                        ));
+      this.camera_teleporter.cameras.push(Mat4.inverse (  
+                                          moon_2.times(Mat4.rotation(1*t, Vec.of(0,-1,0)) )
+                                                  .times(Mat4.translation([  0,0,2 ])  )
                                                         ));
       this.camera_teleporter.cameras.push(Mat4.inverse (  
                                           planet_4.times(Mat4.rotation(.4*t, Vec.of(0,-1,0)) )
