@@ -82,7 +82,7 @@ class Solar_System extends Scene
                                      { ambient: 0, diffusivity: 0.98, specularity: 0.02, color: Color.of(0.517647, 0.517647, 0.517647, 1) }), //sgimediumgray
                         planet_2: new Material( phong_shader,    
                                     { ambient: 0, diffusivity: 0, specularity: 1, color: Color.of(0.662745, 0.662745, 0.662745, 1) } ), //darkgray
-                          moon_2: new Material( phong_shader,    
+                          moon_2: new Material( gouraud_shader,    
                                     { ambient: 0, diffusivity: .9, specularity: .5, color: Color.of(1, 1,1, 1) } ),
                         planet_4: new Material( texture_shader_2,    
                                     { texture: new Texture( "assets/bricks.png", "NEAREST" ),
@@ -235,7 +235,7 @@ class Solar_System extends Scene
      
       
                                                 // TODO (#6b1):  Draw moon 1 orbiting 2 units away from planet 2, revolving AND rotating.
-                                                // *TODO: actually figure out what fucking textures this needs to be
+                                                
       let moon_1= planet_2.copy()
       moon_1 = moon_1.times( Mat4.rotation( .5*t , Vec.of( 0,1,0 ) ) );
       moon_1 = moon_1.times( Mat4.translation([  2,0,0 ])  );
@@ -332,28 +332,6 @@ class Solar_System extends Scene
 
 
 
-      // ***** BEGIN TEST SCENE *****               
-                                          // TODO:  Delete (or comment out) the rest of display(), starting here:
-
-     /* program_state.set_camera( Mat4.translation([ 0,3,-10 ]) );
-      const angle = Math.sin( t );
-      const light_position = Mat4.rotation( angle, [ 1,0,0 ] ).times( Vec.of( 0,-1,1,0 ) );
-      program_state.lights = [ new Light( light_position, Color.of( 1,1,1,1 ), 1000000 ) ];
-      model_transform = Mat4.identity();
-      this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic.override( yellow ) );
-      model_transform.post_multiply( Mat4.translation([ 0, -2, 0 ]) );
-      this.shapes.ball_4.draw( context, program_state, model_transform, this.materials.metal_earth.override( blue ) );
-      model_transform.post_multiply( Mat4.rotation( t, Vec.of( 0,1,0 ) ) )
-      model_transform.post_multiply( Mat4.rotation( 1, Vec.of( 0,0,1 ) )
-                             .times( Mat4.scale      ([ 1,   2, 1 ]) )
-                             .times( Mat4.translation([ 0,-1.5, 0 ]) ) );
-      this.shapes.box.draw( context, program_state, model_transform, this.materials.plastic_stars.override( yellow ) );*/
-
-      // ***** END TEST SCENE *****
-
-      // Warning: Get rid of the test scene, or else the camera position and movement will not work.
-
-
       
     }
 }
@@ -446,10 +424,50 @@ class Gouraud_Shader extends defs.Phong_Shader
                           // variable will pull its value from the weighted average of the varying's value
                           // from the three vertices of its triangle, weighted according to how close the 
                           // fragment is to each extreme corner point (vertex).
+  return ` precision mediump float;
+        const int N_LIGHTS = ` + this.num_lights + `;
+        uniform float ambient, diffusivity, specularity, smoothness;
+        uniform vec4 light_positions_or_vectors[N_LIGHTS], light_colors[N_LIGHTS];
+        uniform float light_attenuation_factors[N_LIGHTS];
+        uniform vec4 shape_color;
+        uniform vec3 squared_scale, camera_center;
+                              // Specifier "varying" means a variable's final value will be passed from the vertex shader
+                              // on to the next phase (fragment shader), then interpolated per-fragment, weighted by the
+                              // pixel fragment's proximity to each of the 3 vertices (barycentric interpolation).
+        varying vec4 color;
+                                             // ***** PHONG SHADING HAPPENS HERE: *****                                       
+        vec3 phong_model_lights( vec3 N, vec3 vertex_worldspace )
+          {                                        // phong_model_lights():  Add up the lights' contributions.
+            vec3 E = normalize( camera_center - vertex_worldspace );
+            vec3 result = vec3( 0.0 );
+            for(int i = 0; i < N_LIGHTS; i++)
+              {
+                            // Lights store homogeneous coords - either a position or vector.  If w is 0, the 
+                            // light will appear directional (uniform direction from all points), and we 
+                            // simply obtain a vector towards the light by directly using the stored value.
+                            // Otherwise if w is 1 it will appear as a point light -- compute the vector to 
+                            // the point light's location from the current surface point.  In either case, 
+                            // fade (attenuate) the light as the vector needed to reach it gets longer.  
+                vec3 surface_to_light_vector = light_positions_or_vectors[i].xyz - 
+                                               light_positions_or_vectors[i].w * vertex_worldspace;                                             
+                float distance_to_light = length( surface_to_light_vector );
+                vec3 L = normalize( surface_to_light_vector );
+                vec3 H = normalize( L + E );
+                                                  // Compute the diffuse and specular components from the Phong
+                                                  // Reflection Model, using Blinn's "halfway vector" method:
+                float diffuse  =      max( dot( N, L ), 0.0 );
+                float specular = pow( max( dot( N, H ), 0.0 ), smoothness );
+                float attenuation = 1.0 / (1.0 + light_attenuation_factors[i] * distance_to_light * distance_to_light );
+                
+                
+                vec3 light_contribution = shape_color.xyz * light_colors[i].xyz * diffusivity * diffuse
+                                                          + light_colors[i].xyz * specularity * specular;
+                result += attenuation * light_contribution;
+              }
+            return result;
+          } ` ;
 
-      return `
-
-      ` ;
+          
     }
   vertex_glsl_code()           // ********* VERTEX SHADER *********
     { 
@@ -465,10 +483,26 @@ class Gouraud_Shader extends defs.Phong_Shader
                                           // fragment shader color), but you can assign to varyings that will be 
                                           // sent as outputs to the fragment shader.
 
-      return this.shared_glsl_code() + `
+     return this.shared_glsl_code() + `
+        attribute vec3 position, normal;                            // Position is expressed in object coordinates.
+        
+        uniform mat4 model_transform;
+        uniform mat4 projection_camera_model_transform;
+
         void main()
-          {
-             
+          {    
+            vec3 N, vertex_worldspace;
+                                                                           // The vertex's final resting place (in NDCS):
+            gl_Position = projection_camera_model_transform * vec4( position, 1.0 );
+                                                                              // The final normal vector in screen space.
+            N = normalize( mat3( model_transform ) * normal / squared_scale);
+            
+            vertex_worldspace = ( model_transform * vec4( position, 1.0 ) ).xyz;
+
+            color = vec4( shape_color.xyz * ambient, shape_color.w );
+                                                                     // Compute the final color with contributions from lights:
+            color.xyz += phong_model_lights( normalize( N ), vertex_worldspace );
+
           } ` ;
     }
   fragment_glsl_code()         // ********* FRAGMENT SHADER ********* 
@@ -480,6 +514,7 @@ class Gouraud_Shader extends defs.Phong_Shader
       return this.shared_glsl_code() + `
         void main()
           {
+            gl_FragColor=color;
                         
           } ` ;
     }
